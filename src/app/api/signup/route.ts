@@ -43,7 +43,8 @@ export async function POST(request: Request) {
       status: 500,
       message:
         "Internel server error while registering a user! error: ",
-      error,
+      user: { email },
+      error: error.errorResponse,
     });
   }
 }

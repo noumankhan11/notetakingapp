@@ -25,8 +25,11 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   username: z.string().min(3, {
@@ -43,6 +46,8 @@ const formSchema = z.object({
 export default function SignupPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,10 +66,44 @@ export default function SignupPage() {
         email: values.email,
         password: values.password,
       });
-
       console.log(response);
-    } catch (error) {
-      console.log(error);
+      if (!response?.data.success) {
+        toast({
+          title: "Error",
+          description: response?.data.message,
+          variant: "destructive",
+        });
+      }
+      if (response?.data.success) {
+        // singing in a user directly after singup
+        const res = await signIn("credentials", {
+          redirect: false,
+          email: values.email,
+          password: values.password,
+        });
+        if (!res?.ok) {
+          toast({
+            title: "Error",
+            description: res?.error,
+            variant: "destructive",
+          });
+        }
+        if (res?.ok) {
+          toast({
+            title: "Signup Success",
+            description: "You have been successfully signed up.",
+          });
+
+          router.push("/");
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Error while registering.. please try again!",
+        variant: "destructive",
+      });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +133,7 @@ export default function SignupPage() {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="johndoe" {...field} />
+                        <Input placeholder="xyz.." {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -109,7 +148,7 @@ export default function SignupPage() {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="john@example.com"
+                          placeholder="xyz@example.com"
                           {...field}
                         />
                       </FormControl>

@@ -26,7 +26,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -40,6 +41,8 @@ const formSchema = z.object({
 export default function SignupPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,21 +53,26 @@ export default function SignupPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("submit", values);
-    try {
-      setIsLoading(true);
-      const response = await signIn("credentials", {
-        redirect: false,
-        email: values.email,
-        password: values.password,
-      });
+    setIsLoading(true);
+    const response = await signIn("credentials", {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+    });
+    response?.ok
+      ? toast({
+          title: "Login Successful",
+          description: "You have been logged in successfully.",
+          variant: "default",
+        })
+      : toast({
+          title: "Error",
+          description: response?.error,
+          variant: "destructive",
+        });
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
+    response?.ok && router.push("/");
   }
 
   return (

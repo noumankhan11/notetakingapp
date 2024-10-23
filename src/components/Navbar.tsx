@@ -15,7 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { data: session, status } = useSession();
-  console.log("session: ", session);
+
   return (
     <nav className="border-b bg-gray-100">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
