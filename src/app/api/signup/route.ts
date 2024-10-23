@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 export async function POST(request: Request) {
   const { username, email, password } = await request.json();
-  // console.log(await request.json());
+
   if (!username || !email || !password) {
     return Response.json({
       success: false,

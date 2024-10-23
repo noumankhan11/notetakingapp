@@ -27,6 +27,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials: any): Promise<any> {
         const { email, password } = await credentials;
+
         if (!email || !password) {
           throw new Error("Email and password are required");
         }
@@ -40,6 +41,7 @@ export const authOptions: NextAuthOptions = {
             password,
             user.password
           );
+          console.log("ismatched password: ", isMatchedPassword);
           if (!isMatchedPassword) {
             throw new Error("Invalid email or password");
           }
@@ -50,9 +52,10 @@ export const authOptions: NextAuthOptions = {
             };
             return userData;
           }
-        } catch (error) {
-          console.log(error);
-          throw new Error("Server error in authentcaion");
+        } catch (error: any) {
+          console.log("the Error: ", error);
+
+          throw new Error(error);
         }
       },
     }),
