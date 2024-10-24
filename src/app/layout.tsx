@@ -36,6 +36,9 @@ export default function RootLayout({
             <Navbar />
           </nav>
           {children}
+          <footer className="border-t bg-white dark:bg-gray-800  py-3 text-center text-sm text-gray-500 dark:text-gray-400">
+            <p>&copy; 2023 NoteNest. All rights reserved.</p>
+          </footer>
         </body>
       </AuthProvider>
     </html>

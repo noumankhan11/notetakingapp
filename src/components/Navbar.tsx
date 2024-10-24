@@ -2,7 +2,14 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Home, Menu, X } from "lucide-react";
+import {
+  Home,
+  LogIn,
+  Menu,
+  Notebook,
+  UserPlus,
+  X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -71,11 +78,13 @@ export default function Navbar() {
             </div> */}
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <Link href="/">
-                  <Button variant="ghost">
-                    <Home className="mr-2 h-4 w-4" />
-                    Home
-                  </Button>
+                <Link
+                  href="/"
+                  className="flex items-center space-x-2">
+                  <Notebook className="h-8 w-8 text-primary" />
+                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    NoteNest
+                  </h1>
                 </Link>
               </div>
             </div>
@@ -84,10 +93,14 @@ export default function Navbar() {
             {!session?.user ? (
               <div className="hidden sm:block">
                 <Link href="/login" className="mr-2">
-                  <Button variant="outline">Login</Button>
+                  <Button variant="ghost">
+                    <LogIn className="mr-2 h-4 w-4" /> Log In
+                  </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button>Sign Up</Button>
+                  <Button>
+                    <UserPlus className="mr-2 h-4 w-4" /> Sign Up
+                  </Button>
                 </Link>
               </div>
             ) : (
