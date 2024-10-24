@@ -45,9 +45,11 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
             My Notes
           </h2>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> New Note
-          </Button>
+          <Link href={`/createnote/${session?.user._id}`}>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> New Note
+            </Button>
+          </Link>
         </div>
 
         <div className="mb-8">

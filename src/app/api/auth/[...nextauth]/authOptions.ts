@@ -49,6 +49,7 @@ export const authOptions: NextAuthOptions = {
             const userData = {
               username: user.username,
               email: user.email,
+              _id: user._id,
             };
             return userData;
           }
