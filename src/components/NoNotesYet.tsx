@@ -2,8 +2,9 @@ import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { FileText, Plus } from "lucide-react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
-export default function NoNotesYet() {
+export default function NoNotesYet({ _id }: { _id: string }) {
   return (
     <div className="min-h-[calc(100vh-110px)] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <main className="container mx-auto px-4 py-8">
@@ -16,9 +17,12 @@ export default function NoNotesYet() {
             <p className="text-gray-600 dark:text-gray-400 mb-6">
               Create your first note to get started with NoteNest.
             </p>
-            <Button className="w-full">
-              <Plus className="mr-2 h-4 w-4" /> Create Your First Note
-            </Button>
+            <Link href={`/createnote/${_id}`}>
+              <Button className="w-full">
+                <Plus className="mr-2 h-4 w-4" /> Create Your First
+                Note
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </main>

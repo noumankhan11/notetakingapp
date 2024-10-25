@@ -25,18 +25,54 @@ import {
 import { useSession } from "next-auth/react";
 import NoNotesYet from "@/components/NoNotesYet";
 import Welcome from "@/components/Welcome";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { INote } from "@/models/note.model";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const data = true;
+  const [noteData, setNoteData] = React.useState<INote[]>([]);
+  const { toast } = useToast();
+
+  const id = session?.user._id;
+
+  React.useEffect(() => {
+    id &&
+      (async () => {
+        try {
+          const response = await axios.get(
+            `/api/get-all-notes?id=${id}`
+          );
+          if (!response?.data.success) {
+            toast({
+              title: "Error",
+              description: response?.data.message,
+              variant: "destructive",
+            });
+          } // Sort the notes by createdAt (newest first)
+          const sortedNotes = response.data.data.sort(
+            (a: INote, b: INote) => {
+              return (
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+              );
+            }
+          );
+          console.log("response: ", response);
+          setNoteData(sortedNotes);
+          console.log("response?.data.data: ", response?.data.data);
+          console.log("notesData: ", noteData);
+        } catch (error) {}
+      })();
+  }, [session]);
 
   if (!session?.user) {
     return <Welcome />;
   }
 
   if (session?.user)
-    if (!data) {
-      return <NoNotesYet />;
+    if (noteData.length <= 0) {
+      return <NoNotesYet _id={id!} />;
     }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -64,7 +100,7 @@ export default function Home() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[
+          {/* {const arrr = [
             {
               title: "Project Ideas",
               description:
@@ -96,22 +132,31 @@ export default function Home() {
               description:
                 "Weekly exercise plan and progress tracking",
               date: "2023-06-10",
-            },
-          ].map((note, index) => (
+            }
+          ]; */}
+
+          {noteData.map((note, index) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{note.title}</CardTitle>
-                <CardDescription>{note.description}</CardDescription>
+                <CardDescription>{note.content}</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Last edited: {note.date}
+                  Last edited:
+                  {new Date(note?.createdAt).toLocaleString()}
                 </p>
               </CardContent>
               <CardFooter>
-                <Button variant="ghost" className="w-full">
-                  <Link href={`/notes/${index}`}>View Note</Link>
-                </Button>
+                <Link href={`/note/${index}`} className="w-full ">
+                  {" "}
+                  <Button
+                    variant="ghost"
+                    className="w-full bg-gray-100 hover:bg-gray-200">
+                    {" "}
+                    View Note{" "}
+                  </Button>{" "}
+                </Link>
               </CardFooter>
             </Card>
           ))}
