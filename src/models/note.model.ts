@@ -8,6 +8,8 @@ export interface INote extends Document {
   title: string;
   content: string;
   user: IUser["_id"];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Create a schema for the Note model
