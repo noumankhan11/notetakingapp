@@ -12,25 +12,34 @@ export async function DELETE(
     await connectDb();
     const isValidId = mongoose.Types.ObjectId.isValid(id);
     if (!isValidId) {
-      return Response.json({
-        success: false,
-        status: 400,
-        message:
-          "Invalid ID format. Please provide a valid MongoDB ID.",
-      });
+      return Response.json(
+        {
+          success: false,
+
+          message:
+            "Invalid ID format. Please provide a valid MongoDB ID.",
+        },
+        { status: 400 }
+      );
     }
     await Note.findByIdAndDelete(id);
-    return Response.json({
-      success: true,
-      status: 200,
-      message: "Note deleted successfully!",
-    });
+    return Response.json(
+      {
+        success: true,
+
+        message: "Note deleted successfully!",
+      },
+      { status: 200 }
+    );
   } catch (error: any) {
-    return Response.json({
-      success: false,
-      status: 500,
-      message: "Failed to delted a Note!",
-      error: error.message,
-    });
+    return Response.json(
+      {
+        success: false,
+
+        message: "Failed to delted a Note!",
+        error: error.message,
+      },
+      { status: 500 }
+    );
   }
 }

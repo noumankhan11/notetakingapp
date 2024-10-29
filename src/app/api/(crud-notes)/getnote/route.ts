@@ -20,12 +20,14 @@ export async function GET(request: NextRequest) {
       });
     }
     const note = await Note.findById(id);
-    return Response.json({
-      success: true,
-      status: 200,
-      message: "note retrieve successfully",
-      note,
-    });
+    return Response.json(
+      {
+        success: true,
+        message: "note retrieve successfully",
+        note,
+      },
+      { status: 200 }
+    );
   } catch (error: any) {
     return Response.json({
       success: false,

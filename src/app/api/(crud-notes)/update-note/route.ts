@@ -3,11 +3,12 @@ import Note from "@/models/note.model";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get("id") as string;
   const { title, content } = await request.json();
 
+  console.log({ id, title, content });
   try {
     await connectDb();
     const isValidId = mongoose.Types.ObjectId.isValid(id);

@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import Placeholder from "@tiptap/extension-placeholder";
 
 export default function NewNotePage({
   params,
@@ -31,8 +32,13 @@ export default function NewNotePage({
   const { toast } = useToast();
 
   const editor = useEditor({
-    extensions: [StarterKit],
-    content: "<p>Start writing your note here...</p>",
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: "Write something …",
+      }),
+    ],
+    content: "",
     editorProps: {
       attributes: {
         class:
@@ -60,7 +66,6 @@ export default function NewNotePage({
         content: editor?.getHTML(),
         userId: params.id, // Replace with actual user ID from your auth system
       });
-      console.log(response);
 
       if (!response?.data.success) {
         return toast({
@@ -110,7 +115,7 @@ export default function NewNotePage({
             placeholder="Note Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-2xl font-bold mb-4 w-full"
+            className="text-2xl font-bold py-[25px] mb-4 w-full"
           />
           <div className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
             <div className="flex flex-wrap gap-2">
