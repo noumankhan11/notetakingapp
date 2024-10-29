@@ -32,6 +32,7 @@ import { INote } from "@/models/note.model";
 export default function Home() {
   const { data: session, status } = useSession();
   const [noteData, setNoteData] = React.useState<INote[]>([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
 
   const id = session?.user._id;
@@ -49,7 +50,7 @@ export default function Home() {
               description: response?.data.message,
               variant: "destructive",
             });
-          } // Sort the notes by createdAt (newest first)
+          }
           const sortedNotes = response.data.data.sort(
             (a: INote, b: INote) => {
               return (
@@ -58,22 +59,40 @@ export default function Home() {
               );
             }
           );
-          console.log("response: ", response);
+
           setNoteData(sortedNotes);
-          console.log("response?.data.data: ", response?.data.data);
-          console.log("notesData: ", noteData);
-        } catch (error) {}
+        } catch (error) {
+          toast({
+            title: "Error",
+            description:
+              "Faild to show notes, please refresh the page",
+            variant: "destructive",
+          });
+        }
       })();
   }, [session]);
 
-  if (!session?.user) {
+  const filteredNotes = noteData.filter(
+    (note) =>
+      note.title
+        .toLowerCase()
+        .trim()
+        .includes(searchTerm.toLowerCase()) ||
+      note.content
+        .toLowerCase()
+        .trim()
+        .includes(searchTerm.toLowerCase())
+  );
+
+  if (status === "authenticated")
+    if (noteData?.length <= 0) {
+      return <NoNotesYet _id={id!} />;
+    }
+
+  if (status === "unauthenticated") {
     return <Welcome />;
   }
 
-  if (session?.user)
-    if (noteData.length <= 0) {
-      return <NoNotesYet _id={id!} />;
-    }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <main className="container mx-auto px-4 py-8">
@@ -95,71 +114,60 @@ export default function Home() {
               className="pl-10"
               placeholder="Search your notes..."
               type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* {const arrr = [
-            {
-              title: "Project Ideas",
-              description:
-                "Brainstorming session for new app concepts",
-              date: "2023-06-15",
-            },
-            {
-              title: "Meeting Notes",
-              description: "Team sync-up discussion points",
-              date: "2023-06-14",
-            },
-            {
-              title: "Book Summary",
-              description: "Key takeaways from 'Atomic Habits'",
-              date: "2023-06-13",
-            },
-            {
-              title: "Travel Plans",
-              description: "Itinerary for upcoming vacation",
-              date: "2023-06-12",
-            },
-            {
-              title: "Recipe Collection",
-              description: "Favorite recipes and cooking tips",
-              date: "2023-06-11",
-            },
-            {
-              title: "Workout Routine",
-              description:
-                "Weekly exercise plan and progress tracking",
-              date: "2023-06-10",
-            }
-          ]; */}
-
-          {noteData.map((note, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle>{note.title}</CardTitle>
-                <CardDescription>{note.content}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Last edited:
-                  {new Date(note?.createdAt).toLocaleString()}
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Link href={`/note/${index}`} className="w-full ">
-                  {" "}
-                  <Button
-                    variant="ghost"
-                    className="w-full bg-gray-100 hover:bg-gray-200">
-                    {" "}
-                    View Note{" "}
-                  </Button>{" "}
-                </Link>
-              </CardFooter>
-            </Card>
-          ))}
+          {filteredNotes.length > 0
+            ? filteredNotes.map((note, index) => {
+                const displayContent =
+                  note.content.length > 220
+                    ? note.content.slice(0, 220) + "..."
+                    : note.content;
+                return (
+                  <Card
+                    key={index}
+                    className="overflow-hidden h-[275px]  p-4 relative">
+                    <CardHeader className="p-3">
+                      <CardTitle>{note.title}</CardTitle>
+                      <CardDescription className="overflow-hidden">
+                        <div
+                          className="h-32 py-2"
+                          dangerouslySetInnerHTML={{
+                            __html: displayContent,
+                          }}>
+                          {/* {note.content} */}
+                        </div>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="overflow-hidden pb-2">
+                      <p className="text-sm  text-gray-500 dark:text-gray-400">
+                        Last edited:
+                        {new Date(note?.updatedAt).toLocaleString()}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="absolute left-5 right-5 bottom-0 py-3 px-2 z-10 bg-white">
+                      <Link
+                        href={`/note/${note._id}`}
+                        className="w-full ">
+                        {" "}
+                        <Button
+                          variant="ghost"
+                          className="w-full bg-gray-100 hover:bg-gray-200">
+                          {" "}
+                          View Note{" "}
+                        </Button>{" "}
+                      </Link>
+                    </CardFooter>
+                  </Card>
+                );
+              })
+            : noteData.length > 0
+            ? "No data matched"
+            : "add some note"}
         </div>
       </main>
     </div>
