@@ -111,8 +111,8 @@ export default function SignupPage() {
 
   return (
     <React.Suspense fallback={<Skeleton />}>
-      <div className="min-h-[calc(100vh-65px)] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-[calc(100vh-110px)] sm:min-h-[calc(100vh-65px)] flex items-start sm:items-center justify-center bg-transparent sm:bg-gradient-to-br from-gray-50 to-gray-100 p-1 sm:p-4">
+        <Card className="w-full max-w-md shadow-none sm:shadow-md rounded-none sm:rounded-xl  border-none">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
               Create an account
@@ -121,7 +121,7 @@ export default function SignupPage() {
               Enter your details below to create your account
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-2 sm:p-6 sm:pt-0 ">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
