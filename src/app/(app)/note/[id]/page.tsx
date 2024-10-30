@@ -65,6 +65,7 @@ export default function NotePage({
           "prose p-2 prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto border-transparent border-2 rounded-lg focus:border-gray-200 focus:outline-none",
       },
     },
+    immediatelyRender: false,
   });
 
   const getData = async () => {
