@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
             password,
             user.password
           );
-          console.log("ismatched password: ", isMatchedPassword);
+
           if (!isMatchedPassword) {
             throw new Error("Invalid email or password");
           }
