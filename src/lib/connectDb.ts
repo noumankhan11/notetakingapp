@@ -2,19 +2,18 @@ import mongoose, { connection } from "mongoose";
 
 const connectDb = async () => {
   let isConnected;
-  connection.readyState === 2 ?? console.log("DB connecting...");
-  // if (isConnected) {
-  if (connection.readyState === 1) {
+
+  if (connection.readyState === 1 || isConnected) {
     console.log("already connected to the database");
     return;
   }
   try {
     const db = await mongoose.connect(
-      "mongodb://127.0.0.1:27017/notetakingapp"
+      process.env.MONGODDB_URI as string
     );
     isConnected = db.connections[0].readyState ?? true;
     console.log("DB connected successfully!!");
-  } catch (error: any) {
+  } catch (error) {
     console.log("DB connection failed error: ", error);
     process.exit(1);
   }

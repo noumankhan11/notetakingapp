@@ -1,16 +1,7 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import {
-  Notebook,
-  PenLine,
-  Search,
-  Plus,
-  Settings,
-  UserPlus,
-  LogIn,
-  FileText,
-} from "lucide-react";
+import { Search, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -3,24 +3,17 @@
 import * as React from "react";
 import Link from "next/link";
 import {
-  Home,
   LogIn,
   LogOut,
   Mail,
-  Menu,
   Notebook,
   User,
   User2Icon,
   UserPlus,
-  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+
 import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
