@@ -104,6 +104,7 @@ export default function SignupPage() {
         variant: "destructive",
       });
       console.error(error);
+      console.log("Error", error);
     } finally {
       setIsLoading(false);
     }

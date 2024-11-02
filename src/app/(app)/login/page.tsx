@@ -54,25 +54,30 @@ export default function SignupPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    const response = await signIn("credentials", {
-      redirect: false,
-      email: values.email,
-      password: values.password,
-    });
-    response?.ok
-      ? toast({
-          title: "Login Successful",
-          description: "You have been logged in successfully.",
-          variant: "default",
-        })
-      : toast({
-          title: "Error",
-          description: response?.error,
-          variant: "destructive",
-        });
+    try {
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+      response?.ok
+        ? toast({
+            title: "Login Successful",
+            description: "You have been logged in successfully.",
+            variant: "default",
+          })
+        : toast({
+            title: "Error",
+            description: response?.error,
+            variant: "destructive",
+          });
 
-    setIsLoading(false);
-    response?.ok && router.push("/");
+      setIsLoading(false);
+      response?.ok && router.push("/");
+    } catch (error) {
+      setIsLoading(false);
+      console.log("Error :", error);
+    }
   }
 
   return (
